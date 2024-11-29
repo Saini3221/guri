@@ -8,11 +8,10 @@ import { useContext } from "react";
 
 function SinglePhone() {
   let { id } = useParams();
-
+  
   const [mobileData, setMobileData] = useState({});
   const [quantity, setQuantity] = useState(1); // Initialize quantity to 1
   const { user } = useContext(UserContext);
-  
   let headers = {
     id: id,
   };
@@ -22,6 +21,7 @@ function SinglePhone() {
       .get("http://localhost:8000/mobile/findSingle", { headers: headers })
       .then((response) => {
         setMobileData(response.data);
+        // console.log(mobileData._id);
       })
       .catch((e) => {
         console.log(e);
@@ -31,14 +31,16 @@ function SinglePhone() {
   const increaseQuantity = () => {
     setQuantity(quantity + 1);
   };
-
+  
   const decreaseQuantity = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
     }
   };
-
+  
   const handleAddToCart = () => {
+    const productId = mobileData._id;
+    // const userId = '';
     if (!user) {
       alert("Please login to add items to the cart.");
       return;
@@ -46,10 +48,11 @@ function SinglePhone() {
 
     // Send request to add item to cart with the selected quantity
     axios
-      .post("http://localhost:8000/cart/add", { id, quantity, })
+      .post("http://localhost:8000/cart/", { quantity, productId  })
       .then((response) => {
         console.log(response.data);
-        
+        console.log(productId);
+
         alert("Item added to cart successfully!");
       })
       .catch((error) => {
@@ -103,7 +106,6 @@ function SinglePhone() {
                 className="bg-yellow-400 py-[2vh] px-[2vh] w-[50%] text-white"
               >
                 Add to Cart
-                 
               </button>
             </div>
 
